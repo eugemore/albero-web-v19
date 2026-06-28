@@ -1,0 +1,59 @@
+query PersonsByFamily($familyId: ID!) {
+  personsByFamily(familyId: $familyId) {
+    _id
+    firstName
+    lastName
+    dateOfBirth
+    placeOfBirth
+    notes
+    family
+    parent
+    createdAt
+    updatedAt
+  }
+}
+
+query Person($id: ID!) {
+  person(id: $id) {
+    _id
+    firstName
+    lastName
+    dateOfBirth
+    placeOfBirth
+    notes
+    family
+    parent
+    createdAt
+    updatedAt
+  }
+}
+
+mutation CreatePerson($input: CreatePersonInput!) {
+  createPerson(input: $input) {
+    _id
+    firstName
+    lastName
+    dateOfBirth
+    placeOfBirth
+    notes
+    family
+    parent
+  }
+}
+
+mutation UpdatePerson($input: UpdatePersonInput!) {
+  updatePerson(input: $input) {
+    _id
+    firstName
+    lastName
+    dateOfBirth
+    placeOfBirth
+    notes
+    parent
+    updatedAt
+  }
+}
+
+mutation RemovePerson($id: ID!) {
+  removePerson(id: $id)
+}

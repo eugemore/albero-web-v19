@@ -1,6 +1,7 @@
 import {
   ApplicationConfig,
   LOCALE_ID,
+  inject,
   provideZoneChangeDetection,
   importProvidersFrom,
 } from '@angular/core';
@@ -15,9 +16,14 @@ import { MAT_DATE_LOCALE } from '@angular/material/core';
 import { MatLuxonDateModule } from '@angular/material-luxon-adapter';
 import { registerLocaleData } from '@angular/common';
 import localeIt from '@angular/common/locales/it';
+import { InMemoryCache } from '@apollo/client/core';
+import { setContext } from '@apollo/client/link/context';
+import { provideApollo } from 'apollo-angular';
+import { HttpLink } from 'apollo-angular/http';
 
 import { routes } from './app.routes';
 import { authInterceptor } from './shared/interceptors/auth.interceptor';
+import { environment } from '../environments/environment';
 
 registerLocaleData(localeIt);
 
@@ -41,5 +47,23 @@ export const appConfig: ApplicationConfig = {
 
     { provide: LOCALE_ID, useValue: 'it' },
     { provide: MAT_DATE_LOCALE, useValue: 'it' },
+
+    provideApollo(() => {
+      const httpLink = inject(HttpLink);
+
+      const authLink = setContext(() => {
+        const token = localStorage.getItem('id_token');
+        return token
+          ? { headers: { Authorization: `Bearer ${token}` } }
+          : {};
+      });
+
+      return {
+        link: authLink.concat(
+          httpLink.create({ uri: `${environment.api}/graphql` }),
+        ),
+        cache: new InMemoryCache(),
+      };
+    }),
   ],
 };

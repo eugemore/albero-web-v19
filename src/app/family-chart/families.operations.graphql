@@ -1,0 +1,43 @@
+query Families {
+  families {
+    _id
+    name
+    notes
+    owner
+    createdAt
+    updatedAt
+  }
+}
+
+query Family($id: ID!) {
+  family(id: $id) {
+    _id
+    name
+    notes
+    owner
+    createdAt
+    updatedAt
+  }
+}
+
+mutation CreateFamily($input: CreateFamilyInput!) {
+  createFamily(input: $input) {
+    _id
+    name
+    notes
+    createdAt
+  }
+}
+
+mutation UpdateFamily($input: UpdateFamilyInput!) {
+  updateFamily(input: $input) {
+    _id
+    name
+    notes
+    updatedAt
+  }
+}
+
+mutation RemoveFamily($id: ID!) {
+  removeFamily(id: $id)
+}

@@ -1,0 +1,58 @@
+query DocumentsByPerson($personId: ID!) {
+  documentsByPerson(personId: $personId) {
+    _id
+    type
+    person
+    status
+    issuingAuthority
+    issueDate
+    referenceNumber
+    notes
+    createdAt
+    updatedAt
+  }
+}
+
+query DocumentsByStatus($status: DocumentStatus!) {
+  documentsByStatus(status: $status) {
+    _id
+    type
+    person
+    status
+    issuingAuthority
+    issueDate
+    referenceNumber
+    notes
+  }
+}
+
+mutation CreateDocument($input: CreateDocumentInput!) {
+  createDocument(input: $input) {
+    _id
+    type
+    person
+    status
+    issuingAuthority
+    issueDate
+    referenceNumber
+    notes
+    owner
+  }
+}
+
+mutation UpdateDocument($input: UpdateDocumentInput!) {
+  updateDocument(input: $input) {
+    _id
+    type
+    status
+    issuingAuthority
+    issueDate
+    referenceNumber
+    notes
+    updatedAt
+  }
+}
+
+mutation RemoveDocument($id: ID!) {
+  removeDocument(id: $id)
+}

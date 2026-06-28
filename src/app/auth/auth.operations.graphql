@@ -1,0 +1,22 @@
+mutation Login($input: LoginInput!) {
+  login(input: $input) {
+    idToken
+    expiresAt
+  }
+}
+
+mutation Register($input: RegisterInput!) {
+  register(input: $input)
+}
+
+mutation VerifyEmail($code: String!) {
+  verifyEmail(code: $code)
+}
+
+query Me {
+  me {
+    _id
+    email
+    active
+  }
+}
