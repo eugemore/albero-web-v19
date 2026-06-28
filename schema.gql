@@ -1,64 +1,70 @@
-# Generated from NestJS code-first resolvers and entity schemas.
-# Update by running: npm run codegen:schema (after `npm run start:dev` in the backend)
-
-scalar DateTime
-
-"""Current status of a citizenship document."""
-enum DocumentStatus {
-  """Pending — document not yet submitted or under review."""
-  PENDIENTE
-  """Not accepted — document was rejected or requires correction."""
-  NO_ACEPTADO
-  """Accepted — document has been approved."""
-  ACEPTADO
-}
-
-type User {
-  _id: ID!
-  email: String!
-  active: Boolean!
-  createdAt: DateTime
-}
-
 type AuthResponse {
-  idToken: String!
   expiresAt: Float!
-}
-
-type Family {
-  _id: ID!
-  name: String!
-  notes: String
-  owner: ID!
-  createdAt: DateTime
-  updatedAt: DateTime
-}
-
-type Person {
-  _id: ID!
-  firstName: String!
-  lastName: String!
-  dateOfBirth: String
-  placeOfBirth: String
-  notes: String
-  family: ID!
-  parent: ID
-  owner: ID!
-  createdAt: DateTime
-  updatedAt: DateTime
+  idToken: String!
 }
 
 type CiudadaniaDocument {
   _id: ID!
-  type: String!
-  person: ID!
-  status: DocumentStatus!
-  issuingAuthority: String
+  createdAt: DateTime
   issueDate: String
-  referenceNumber: String
+  issuingAuthority: String
   notes: String
   owner: ID!
+  person: ID!
+  referenceNumber: String
+  status: DocumentStatus!
+  type: String!
+  updatedAt: DateTime
+}
+
+input CreateDocumentInput {
+  issueDate: String
+  issuingAuthority: String
+  notes: String
+  personId: ID!
+  referenceNumber: String
+  status: DocumentStatus
+  type: String!
+}
+
+input CreateFamilyInput {
+  name: String!
+  notes: String
+}
+
+input CreatePersonInput {
+  dateOfBirth: String
+  familyId: ID!
+  firstName: String!
+  lastName: String!
+  notes: String
+  parentId: ID
+  placeOfBirth: String
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+"""Current status of a citizenship document."""
+enum DocumentStatus {
+  """Accepted — document has been approved."""
+  ACEPTADO
+
+  """Not accepted — document was rejected or requires correction."""
+  NO_ACEPTADO
+
+  """Pending — document not yet submitted or under review."""
+  PENDIENTE
+}
+
+type Family {
+  _id: ID!
   createdAt: DateTime
+  name: String!
+  notes: String
+  owner: ID!
   updatedAt: DateTime
 }
 
@@ -67,14 +73,59 @@ input LoginInput {
   password: String!
 }
 
+type Mutation {
+  createDocument(input: CreateDocumentInput!): CiudadaniaDocument!
+  createFamily(input: CreateFamilyInput!): Family!
+  createPerson(input: CreatePersonInput!): Person!
+  login(input: LoginInput!): AuthResponse!
+  register(input: RegisterInput!): String!
+  removeDocument(id: ID!): ID!
+  removeFamily(id: ID!): ID!
+  removePerson(id: ID!): ID!
+  updateDocument(input: UpdateDocumentInput!): CiudadaniaDocument!
+  updateFamily(input: UpdateFamilyInput!): Family!
+  updatePerson(input: UpdatePersonInput!): Person!
+  verifyEmail(code: String!): String!
+}
+
+type Person {
+  _id: ID!
+  createdAt: DateTime
+  dateOfBirth: String
+  family: ID!
+  firstName: String!
+  lastName: String!
+  notes: String
+  owner: ID!
+  parent: ID
+  placeOfBirth: String
+  updatedAt: DateTime
+}
+
+type Query {
+  document(id: ID!): CiudadaniaDocument!
+  documentsByPerson(personId: ID!): [CiudadaniaDocument!]!
+  documentsByStatus(status: DocumentStatus!): [CiudadaniaDocument!]!
+  families: [Family!]!
+  family(id: ID!): Family!
+  me: User!
+  person(id: ID!): Person!
+  personsByFamily(familyId: ID!): [Person!]!
+}
+
 input RegisterInput {
   email: String!
   password: String!
 }
 
-input CreateFamilyInput {
-  name: String!
+input UpdateDocumentInput {
+  id: ID!
+  issueDate: String
+  issuingAuthority: String
   notes: String
+  referenceNumber: String
+  status: DocumentStatus
+  type: String
 }
 
 input UpdateFamilyInput {
@@ -83,68 +134,19 @@ input UpdateFamilyInput {
   notes: String
 }
 
-input CreatePersonInput {
-  firstName: String!
-  lastName: String!
-  dateOfBirth: String
-  placeOfBirth: String
-  notes: String
-  familyId: ID!
-  parentId: ID
-}
-
 input UpdatePersonInput {
-  id: ID!
-  firstName: String
-  lastName: String
   dateOfBirth: String
-  placeOfBirth: String
+  firstName: String
+  id: ID!
+  lastName: String
   notes: String
   parentId: ID
+  placeOfBirth: String
 }
 
-input CreateDocumentInput {
-  type: String!
-  personId: ID!
-  status: DocumentStatus
-  issuingAuthority: String
-  issueDate: String
-  referenceNumber: String
-  notes: String
-}
-
-input UpdateDocumentInput {
-  id: ID!
-  type: String
-  status: DocumentStatus
-  issuingAuthority: String
-  issueDate: String
-  referenceNumber: String
-  notes: String
-}
-
-type Query {
-  families: [Family!]!
-  family(id: ID!): Family!
-  personsByFamily(familyId: ID!): [Person!]!
-  person(id: ID!): Person!
-  me: User!
-  documentsByPerson(personId: ID!): [CiudadaniaDocument!]!
-  documentsByStatus(status: DocumentStatus!): [CiudadaniaDocument!]!
-  document(id: ID!): CiudadaniaDocument!
-}
-
-type Mutation {
-  register(input: RegisterInput!): String!
-  verifyEmail(code: String!): String!
-  login(input: LoginInput!): AuthResponse!
-  createFamily(input: CreateFamilyInput!): Family!
-  updateFamily(input: UpdateFamilyInput!): Family!
-  removeFamily(id: ID!): ID!
-  createPerson(input: CreatePersonInput!): Person!
-  updatePerson(input: UpdatePersonInput!): Person!
-  removePerson(id: ID!): ID!
-  createDocument(input: CreateDocumentInput!): CiudadaniaDocument!
-  updateDocument(input: UpdateDocumentInput!): CiudadaniaDocument!
-  removeDocument(id: ID!): ID!
+type User {
+  _id: ID!
+  active: Boolean!
+  createdAt: DateTime
+  email: String!
 }

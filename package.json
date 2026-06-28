@@ -7,8 +7,7 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "codegen": "graphql-codegen --config codegen.ts",
-    "codegen:schema": "graphql-codegen introspect-schema http://localhost:3000/graphql --output schema.gql"
+    "codegen": "graphql-codegen --config codegen.ts"
   },
   "private": true,
   "dependencies": {
@@ -37,6 +36,7 @@
     "@angular/cli": "^19.2.27",
     "@angular/compiler-cli": "^19.2.0",
     "@graphql-codegen/cli": "^7.1.3",
+    "@graphql-codegen/schema-ast": "^6.0.1",
     "@graphql-codegen/typescript": "^6.0.2",
     "@graphql-codegen/typescript-apollo-angular": "^5.0.1",
     "@graphql-codegen/typescript-operations": "^6.0.5",
