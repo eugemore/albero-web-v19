@@ -1,0 +1,11 @@
+@for (member of familyMembers(); track member._id; let i = $index; let last = $last) {
+  <app-member-card
+    [member]="member"
+    [editionBlocked]="editionBlocked()"
+    [last]="last"
+    (addMemberOutput)="addMember()"
+    (deleteMemberOutput)="deleteMember(i)"
+    (editingOutput)="editMember(i)" />
+} @empty {
+  <p>No hay miembros en esta familia.</p>
+}

@@ -1,0 +1,29 @@
+<mat-card class="example-card">
+  <mat-card-header>
+    <mat-card-title>
+      {{ member().firstName + ' ' + (member().middleNames || '') + ' ' + member().lastName }}
+    </mat-card-title>
+    <mat-card-subtitle>{{ member().avo ? 'Avo' : '' }}</mat-card-subtitle>
+  </mat-card-header>
+  <mat-card-content>
+    <p>Birth Date: {{ member().birth_date | date : 'longDate' }}</p>
+    <p>Nationality: {{ member().nationality }}</p>
+    <p>Status: {{ member().status }}</p>
+    <p>Gender: {{ member().gender === 'M' ? 'Male' : 'Female' }}</p>
+    <p>Alive: {{ member().alive ? 'Si' : 'No' }}</p>
+    <p>Documents: {{ member().documents.length }}</p>
+  </mat-card-content>
+  <mat-card-actions>
+    <button [disabled]="editionBlocked()" mat-icon-button color="primary" (click)="editingOutput.emit()">
+      <mat-icon fontIcon="edit-square" />
+    </button>
+    <button [disabled]="editionBlocked()" mat-icon-button color="primary">
+      <mat-icon fontIcon="search" />
+    </button>
+    @if (last()) {
+      <button mat-icon-button color="primary" (click)="addMemberOutput.emit()">
+        <mat-icon fontIcon="add" />
+      </button>
+    }
+  </mat-card-actions>
+</mat-card>

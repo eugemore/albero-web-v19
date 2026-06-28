@@ -1,0 +1,7 @@
+<mat-card class="login-card mat-elevation-z3">
+  @if (!signup()) {
+    <app-login-card (signupOutput)="toggleCard()" />
+  } @else {
+    <app-signup-card (signupOutput)="toggleCard()" />
+  }
+</mat-card>
