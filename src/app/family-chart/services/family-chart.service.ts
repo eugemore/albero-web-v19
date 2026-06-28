@@ -1,40 +1,58 @@
 import { Injectable, inject } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { jwtDecode } from 'jwt-decode';
-import { environment } from '../../../environments/environment';
-import { Family } from '../../shared/models/family.model';
-import { Member } from '../../shared/models/member.model';
-import { CardFormOptions } from '../models/card-form-options.model';
+import { map } from 'rxjs/operators';
+import {
+  FamiliesGQL,
+  FamiliesQuery,
+  PersonsByFamilyGQL,
+  PersonsByFamilyQuery,
+  CreatePersonGQL,
+  UpdatePersonGQL,
+  RemovePersonGQL,
+  CreatePersonInput,
+  UpdatePersonInput,
+} from '../../graphql/generated';
 
-interface JwtPayload {
-  sub: string;
-}
+export type Family = FamiliesQuery['families'][0];
+export type Person = PersonsByFamilyQuery['personsByFamily'][0];
+
+export type { CreatePersonInput, UpdatePersonInput };
 
 @Injectable({ providedIn: 'root' })
 export class FamilyChartService {
-  private readonly http = inject(HttpClient);
+  private readonly familiesGQL = inject(FamiliesGQL);
+  private readonly personsByFamilyGQL = inject(PersonsByFamilyGQL);
+  private readonly createPersonGQL = inject(CreatePersonGQL);
+  private readonly updatePersonGQL = inject(UpdatePersonGQL);
+  private readonly removePersonGQL = inject(RemovePersonGQL);
 
-  private getUserId(): string {
-    const token = localStorage.getItem('id_token') ?? '';
-    return jwtDecode<JwtPayload>(token).sub;
+  getFamilies(): Observable<Family[]> {
+    return this.familiesGQL
+      .fetch()
+      .pipe(map(result => result.data!.families));
   }
 
-  getFamily(): Observable<Family> {
-    return this.http.get<Family>(`${environment.api}/family/${this.getUserId()}`);
+  getPersonsByFamily(familyId: string): Observable<Person[]> {
+    return this.personsByFamilyGQL
+      .fetch({ variables: { familyId } })
+      .pipe(map(result => result.data!.personsByFamily));
   }
 
-  refreshMembers(): Observable<Member[]> {
-    return this.http.get<Member[]>(
-      `${environment.api}/family/${this.getUserId()}/members`,
-    );
+  createPerson(input: CreatePersonInput): Observable<Person> {
+    return this.createPersonGQL
+      .mutate({ variables: { input } })
+      .pipe(map(result => result.data!.createPerson));
   }
 
-  updateFamily(familyId: string, member: Member): Observable<Family> {
-    return this.http.put<Family>(`${environment.api}/family/${familyId}`, member);
+  updatePerson(input: UpdatePersonInput): Observable<Person> {
+    return this.updatePersonGQL
+      .mutate({ variables: { input } })
+      .pipe(map(result => result.data!.updatePerson));
   }
 
-  getCardFormOptions(): Observable<CardFormOptions> {
-    return this.http.get<CardFormOptions>(`${environment.api}/options/cardform`);
+  removePerson(id: string): Observable<string> {
+    return this.removePersonGQL
+      .mutate({ variables: { id } })
+      .pipe(map(result => result.data!.removePerson as string));
   }
 }

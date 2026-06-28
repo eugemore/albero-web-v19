@@ -1,7 +1,5 @@
 import { Component, inject, output, signal } from '@angular/core';
-import { HttpErrorResponse } from '@angular/common/http';
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -19,11 +17,11 @@ import { confirmPasswordValidator } from '../../../shared/validators/confirm-pas
 export class SignupCardComponent {
   private readonly fb = inject(NonNullableFormBuilder);
   private readonly authService = inject(AuthService);
-  private readonly router = inject(Router);
 
   readonly signupOutput = output<void>();
 
-  protected readonly signUpError = signal<string | null>(null);
+  protected readonly registerMessage = signal<string | null>(null);
+  protected readonly registerError = signal<string | null>(null);
 
   protected readonly form = this.fb.group(
     {
@@ -38,12 +36,10 @@ export class SignupCardComponent {
     if (!this.form.valid) return;
     const { email, password } = this.form.getRawValue();
 
-    this.authService.signUp({ email, password }).subscribe((res) => {
-      if (res instanceof HttpErrorResponse) {
-        this.signUpError.set(res.error as string);
-      } else {
-        this.router.navigateByUrl('/chart');
-      }
+    this.authService.register({ email, password }).subscribe({
+      next: msg => this.registerMessage.set(msg),
+      error: (err: { message?: string }) =>
+        this.registerError.set(err?.message ?? 'Registration failed. Please try again.'),
     });
   }
 }

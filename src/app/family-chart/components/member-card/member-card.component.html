@@ -1,28 +1,28 @@
-<mat-card class="example-card">
+<mat-card>
   <mat-card-header>
-    <mat-card-title>
-      {{ member().firstName + ' ' + (member().middleNames || '') + ' ' + member().lastName }}
-    </mat-card-title>
-    <mat-card-subtitle>{{ member().avo ? 'Avo' : '' }}</mat-card-subtitle>
+    <mat-card-title>{{ member().firstName }} {{ member().lastName }}</mat-card-title>
+    @if (member().placeOfBirth) {
+      <mat-card-subtitle>{{ member().placeOfBirth }}</mat-card-subtitle>
+    }
   </mat-card-header>
   <mat-card-content>
-    <p>Birth Date: {{ member().birth_date | date : 'longDate' }}</p>
-    <p>Nationality: {{ member().nationality }}</p>
-    <p>Status: {{ member().status }}</p>
-    <p>Gender: {{ member().gender === 'M' ? 'Male' : 'Female' }}</p>
-    <p>Alive: {{ member().alive ? 'Si' : 'No' }}</p>
-    <p>Documents: {{ member().documents.length }}</p>
+    @if (member().dateOfBirth) {
+      <p>Nacimiento: {{ member().dateOfBirth }}</p>
+    }
+    @if (member().notes) {
+      <p>{{ member().notes }}</p>
+    }
   </mat-card-content>
   <mat-card-actions>
-    <button [disabled]="editionBlocked()" mat-icon-button color="primary" (click)="editingOutput.emit()">
-      <mat-icon fontIcon="edit-square" />
+    <button mat-icon-button color="primary" [disabled]="editionBlocked()" (click)="editingOutput.emit()">
+      <mat-icon>edit</mat-icon>
     </button>
-    <button [disabled]="editionBlocked()" mat-icon-button color="primary">
-      <mat-icon fontIcon="search" />
+    <button mat-icon-button color="warn" [disabled]="editionBlocked()" (click)="deleteMemberOutput.emit()">
+      <mat-icon>delete</mat-icon>
     </button>
     @if (last()) {
       <button mat-icon-button color="primary" (click)="addMemberOutput.emit()">
-        <mat-icon fontIcon="add" />
+        <mat-icon>add</mat-icon>
       </button>
     }
   </mat-card-actions>

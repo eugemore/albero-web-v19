@@ -38,6 +38,8 @@ mutation CreatePerson($input: CreatePersonInput!) {
     notes
     family
     parent
+    createdAt
+    updatedAt
   }
 }
 
@@ -49,7 +51,9 @@ mutation UpdatePerson($input: UpdatePersonInput!) {
     dateOfBirth
     placeOfBirth
     notes
+    family
     parent
+    createdAt
     updatedAt
   }
 }

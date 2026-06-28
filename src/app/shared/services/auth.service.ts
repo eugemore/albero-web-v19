@@ -1,10 +1,9 @@
-import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { DateTime } from 'luxon';
-import { BehaviorSubject, Observable, concat, of } from 'rxjs';
-import { catchError, last, tap } from 'rxjs/operators';
-import { environment } from '../../../environments/environment';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { LoginGQL, RegisterGQL } from '../../graphql/generated';
 
 interface Credentials {
   email: string;
@@ -13,39 +12,28 @@ interface Credentials {
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  private readonly http = inject(HttpClient);
+  private readonly loginGQL = inject(LoginGQL);
+  private readonly registerGQL = inject(RegisterGQL);
   private readonly router = inject(Router);
 
   readonly loggedInSubject = new BehaviorSubject<boolean>(false);
 
-  signUp(user: Credentials): Observable<HttpResponse<unknown>> {
-    return concat(
-      this.http.post(`${environment.api}/signup`, user, { observe: 'response' }),
-      this.login(user),
-    ).pipe(
-      last(),
-      catchError(res => of(res)),
-    );
+  register(credentials: Credentials): Observable<string> {
+    return this.registerGQL
+      .mutate({ variables: { input: credentials } })
+      .pipe(map(result => result.data?.register ?? ''));
   }
 
-  login(user: Credentials): Observable<HttpResponse<unknown>> {
-    return this.http
-      .post(`${environment.api}/login`, user, { observe: 'response' })
-      .pipe(
-        tap(res => {
-          this.setSession(res as HttpResponse<{ idToken: string; expiresAt: number }>);
+  login(credentials: Credentials): Observable<void> {
+    return this.loginGQL.mutate({ variables: { input: credentials } }).pipe(
+      map(result => {
+        const auth = result.data?.login;
+        if (auth) {
+          this.setSession(auth.idToken, auth.expiresAt);
           this.loggedInSubject.next(true);
-        }),
-        catchError(res => of(res)),
-      );
-  }
-
-  private setSession(authResult: HttpResponse<{ idToken: string; expiresAt: number }>): void {
-    if (authResult.status === 200 && authResult.body) {
-      const expiresAt = DateTime.fromMillis(authResult.body.expiresAt);
-      localStorage.setItem('id_token', authResult.body.idToken);
-      localStorage.setItem('expires_at', expiresAt.toISO() ?? '');
-    }
+        }
+      }),
+    );
   }
 
   logout(): void {
@@ -56,17 +44,21 @@ export class AuthService {
   }
 
   isLoggedIn(): boolean {
-    const isLoggedIn = DateTime.now() <= this.getExpiration();
-    this.loggedInSubject.next(isLoggedIn);
-    return isLoggedIn;
+    const loggedIn = DateTime.now() <= this.getExpiration();
+    this.loggedInSubject.next(loggedIn);
+    return loggedIn;
   }
 
   isLoggedOut(): boolean {
     return !this.isLoggedIn();
   }
 
+  private setSession(idToken: string, expiresAt: number): void {
+    localStorage.setItem('id_token', idToken);
+    localStorage.setItem('expires_at', DateTime.fromMillis(expiresAt).toISO() ?? '');
+  }
+
   private getExpiration(): DateTime {
-    const expiration = localStorage.getItem('expires_at') ?? '';
-    return DateTime.fromISO(expiration);
+    return DateTime.fromISO(localStorage.getItem('expires_at') ?? '');
   }
 }

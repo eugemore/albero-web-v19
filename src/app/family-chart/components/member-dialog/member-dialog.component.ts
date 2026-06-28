@@ -7,13 +7,21 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { DateTime } from 'luxon';
-import { Member } from '../../../shared/models/member.model';
-import { CardFormOptions } from '../../models/card-form-options.model';
+import { Person } from '../../services/family-chart.service';
 
-interface DialogData {
-  options: CardFormOptions;
-  member: Member | undefined;
-  avo: boolean;
+export interface PersonDialogData {
+  person: Person | null;
+  familyId: string;
+  persons: Person[];
+}
+
+export interface PersonFormValue {
+  firstName: string;
+  lastName: string;
+  dateOfBirth: string | null;
+  placeOfBirth: string | null;
+  notes: string | null;
+  parentId: string | null;
 }
 
 @Component({
@@ -34,57 +42,51 @@ interface DialogData {
 export class MemberDialogComponent {
   private readonly fb = inject(NonNullableFormBuilder);
   private readonly dialogRef = inject(MatDialogRef<MemberDialogComponent>);
-  readonly data = inject<DialogData>(MAT_DIALOG_DATA);
+  readonly data = inject<PersonDialogData>(MAT_DIALOG_DATA);
 
-  protected readonly memberForm = this.fb.group({
-    _id: [''],
+  protected readonly personForm = this.fb.group({
     firstName: ['', Validators.required],
     lastName: ['', Validators.required],
-    middleNames: [''],
-    nationality: ['', Validators.required],
-    gender: ['', Validators.required],
-    status: ['', Validators.required],
-    alive: [true, Validators.required],
-    birth_date: [DateTime.now().setLocale('it') as DateTime | string, Validators.required],
-    avo: [false],
+    dateOfBirth: [null as DateTime | null],
+    placeOfBirth: [''],
+    notes: [''],
+    parentId: [null as string | null],
   });
 
   constructor() {
-    if (this.data.member) {
-      this.setFormValues(this.data.member);
+    if (this.data.person) {
+      this.setFormValues(this.data.person);
     }
   }
 
-  private setFormValues(member: Member): void {
-    this.memberForm.setValue({
-      _id: member._id,
-      firstName: member.firstName,
-      lastName: member.lastName,
-      middleNames: member.middleNames ?? '',
-      nationality:
-        this.data.options.nationality.find(
-          n => n.toLowerCase() === member.nationality.toLowerCase(),
-        ) ?? '',
-      status:
-        this.data.options.status.find(
-          s => s.toLowerCase() === member.status.toLowerCase(),
-        ) ?? '',
-      gender: member.gender ?? '',
-      alive: member.alive,
-      birth_date: member.birth_date
-        ? DateTime.fromISO(member.birth_date).setLocale('it')
-        : DateTime.now().setLocale('it'),
-      avo: member.avo ?? this.data.avo ?? false,
+  private setFormValues(person: Person): void {
+    this.personForm.patchValue({
+      firstName: person.firstName,
+      lastName: person.lastName,
+      dateOfBirth: person.dateOfBirth ? DateTime.fromISO(person.dateOfBirth) : null,
+      placeOfBirth: person.placeOfBirth ?? '',
+      notes: person.notes ?? '',
+      parentId: person.parent ?? null,
     });
   }
 
   protected save(): void {
-    if (this.memberForm.valid) {
-      this.dialogRef.close(this.memberForm.getRawValue());
-    }
+    if (!this.personForm.valid) return;
+    const raw = this.personForm.getRawValue();
+    const result: PersonFormValue = {
+      firstName: raw.firstName,
+      lastName: raw.lastName,
+      dateOfBirth: raw.dateOfBirth instanceof DateTime
+        ? raw.dateOfBirth.toFormat('yyyy-MM-dd')
+        : null,
+      placeOfBirth: raw.placeOfBirth || null,
+      notes: raw.notes || null,
+      parentId: raw.parentId || null,
+    };
+    this.dialogRef.close(result);
   }
 
   protected cancel(): void {
-    this.dialogRef.close(undefined);
+    this.dialogRef.close(null);
   }
 }

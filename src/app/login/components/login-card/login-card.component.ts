@@ -1,5 +1,4 @@
 import { Component, inject, output, signal } from '@angular/core';
-import { HttpResponse } from '@angular/common/http';
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
@@ -33,13 +32,9 @@ export class LoginCardComponent {
     if (!this.form.valid) return;
     const { email, password } = this.form.getRawValue();
 
-    this.authService.login({ email, password }).subscribe((res) => {
-      const response = res as HttpResponse<unknown>;
-      if (response.status === 200) {
-        this.router.navigateByUrl('/chart');
-      } else if (response.status === 401) {
-        this.wrongPassword.set(true);
-      }
+    this.authService.login({ email, password }).subscribe({
+      next: () => this.router.navigateByUrl('/chart'),
+      error: () => this.wrongPassword.set(true),
     });
   }
 }

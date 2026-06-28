@@ -1,12 +1,8 @@
 import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { forkJoin } from 'rxjs';
-import { FamilyChartService } from '../../services/family-chart.service';
-import { MemberDialogComponent } from '../member-dialog/member-dialog.component';
+import { FamilyChartService, Family, Person } from '../../services/family-chart.service';
+import { MemberDialogComponent, PersonDialogData, PersonFormValue } from '../member-dialog/member-dialog.component';
 import { MemberCardComponent } from '../member-card/member-card.component';
-import { Family } from '../../../shared/models/family.model';
-import { Member } from '../../../shared/models/member.model';
-import { CardFormOptions } from '../../models/card-form-options.model';
 
 @Component({
   selector: 'app-chart',
@@ -20,71 +16,75 @@ export class ChartComponent implements OnInit {
   private readonly dialog = inject(MatDialog);
 
   protected readonly family = signal<Family | null>(null);
-  protected readonly familyMembers = signal<Member[]>([]);
-  protected readonly editOptions = signal<CardFormOptions | null>(null);
+  protected readonly persons = signal<Person[]>([]);
   protected readonly editionBlocked = signal(false);
 
-  protected readonly hasFamilyMembers = computed(() => this.familyMembers().length > 0);
+  protected readonly hasPersons = computed(() => this.persons().length > 0);
 
   ngOnInit(): void {
-    forkJoin({
-      family: this.service.getFamily(),
-      options: this.service.getCardFormOptions(),
-    }).subscribe(({ family, options }) => {
-      this.family.set(family);
-      this.editOptions.set(options);
-      this.initMembers(family.members);
+    this.service.getFamilies().subscribe(families => {
+      if (families.length === 0) return;
+      const first = families[0];
+      this.family.set(first);
+      this.loadPersons(first._id);
     });
   }
 
-  private initMembers(members: Member[]): void {
-    if (members?.length > 0) {
-      this.familyMembers.set(members);
-    } else {
-      this.openMemberDialog(undefined, true);
-    }
+  private loadPersons(familyId: string): void {
+    this.service.getPersonsByFamily(familyId).subscribe(persons => {
+      this.persons.set(persons);
+      if (persons.length === 0) {
+        this.openPersonDialog(null);
+      }
+    });
   }
 
-  protected editMember(index: number): void {
-    this.openMemberDialog(this.familyMembers()[index]);
+  protected editPerson(index: number): void {
+    this.openPersonDialog(this.persons()[index]);
   }
 
-  protected addMember(): void {
-    this.openMemberDialog(undefined, false);
+  protected addPerson(): void {
+    this.openPersonDialog(null);
   }
 
-  private openMemberDialog(member: Member | undefined, avo = false): void {
+  protected deletePerson(index: number): void {
+    const person = this.persons()[index];
+    if (!person) return;
+    this.editionBlocked.set(true);
+    this.service.removePerson(person._id).subscribe(() => {
+      this.editionBlocked.set(false);
+      this.reloadPersons();
+    });
+  }
+
+  private openPersonDialog(person: Person | null): void {
+    const familyId = this.family()?._id;
+    if (!familyId) return;
     this.editionBlocked.set(true);
 
+    const data: PersonDialogData = { person, familyId, persons: this.persons() };
+
     this.dialog
-      .open(MemberDialogComponent, {
-        data: { options: this.editOptions(), member, avo },
-      })
+      .open(MemberDialogComponent, { data })
       .afterClosed()
-      .subscribe((updated: Member | undefined) => {
-        if (updated) {
-          this.persistMemberUpdate(updated);
-        }
+      .subscribe((result: PersonFormValue | null) => {
         this.editionBlocked.set(false);
+        if (!result) return;
+
+        if (person) {
+          this.service
+            .updatePerson({ id: person._id, ...result })
+            .subscribe(() => this.reloadPersons());
+        } else {
+          this.service
+            .createPerson({ familyId, ...result })
+            .subscribe(() => this.reloadPersons());
+        }
       });
   }
 
-  private persistMemberUpdate(member: Member): void {
-    const currentFamily = this.family();
-    if (!currentFamily) return;
-
-    this.service.updateFamily(currentFamily._id, member).subscribe(() => {
-      this.refreshMembers();
-    });
-  }
-
-  protected deleteMember(index: number): void {
-    this.familyMembers.update(members => members.filter((_, i) => i !== index));
-  }
-
-  private refreshMembers(): void {
-    this.service.refreshMembers().subscribe(members => {
-      this.familyMembers.set(members);
-    });
+  private reloadPersons(): void {
+    const familyId = this.family()?._id;
+    if (familyId) this.loadPersons(familyId);
   }
 }

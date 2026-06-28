@@ -1,8 +1,8 @@
-<h1 mat-dialog-title>Edit Member</h1>
+<h1 mat-dialog-title>{{ data.person ? 'Edit Person' : 'Add Person' }}</h1>
 <div mat-dialog-content>
-  <form [formGroup]="memberForm">
+  <form [formGroup]="personForm">
     <mat-form-field appearance="fill">
-      <mat-label>Name</mat-label>
+      <mat-label>First Name</mat-label>
       <input matInput formControlName="firstName">
     </mat-form-field>
     <mat-form-field appearance="fill">
@@ -10,50 +10,36 @@
       <input matInput formControlName="lastName">
     </mat-form-field>
     <mat-form-field appearance="fill">
-      <mat-label>Middle Names</mat-label>
-      <input matInput formControlName="middleNames">
-    </mat-form-field>
-    <mat-form-field appearance="fill">
-      <mat-label>Birth Date</mat-label>
-      <input matInput formControlName="birth_date" [matDatepicker]="picker">
+      <mat-label>Date of Birth</mat-label>
+      <input matInput formControlName="dateOfBirth" [matDatepicker]="picker">
       <mat-hint>DD/MM/YYYY</mat-hint>
       <mat-datepicker-toggle matSuffix [for]="picker" />
       <mat-datepicker #picker />
     </mat-form-field>
     <mat-form-field appearance="fill">
-      <mat-label>Nationality</mat-label>
-      <mat-select formControlName="nationality">
-        @for (option of data.options.nationality; track option) {
-          <mat-option [value]="option">{{ option }}</mat-option>
+      <mat-label>Place of Birth</mat-label>
+      <input matInput formControlName="placeOfBirth">
+    </mat-form-field>
+    <mat-form-field appearance="fill">
+      <mat-label>Parent</mat-label>
+      <mat-select formControlName="parentId">
+        <mat-option [value]="null">— None —</mat-option>
+        @for (person of data.persons; track person._id) {
+          @if (!data.person || person._id !== data.person._id) {
+            <mat-option [value]="person._id">
+              {{ person.firstName }} {{ person.lastName }}
+            </mat-option>
+          }
         }
       </mat-select>
     </mat-form-field>
     <mat-form-field appearance="fill">
-      <mat-label>Gender</mat-label>
-      <mat-select formControlName="gender">
-        @for (option of data.options.gender; track option.value) {
-          <mat-option [value]="option.value">{{ option.desc }}</mat-option>
-        }
-      </mat-select>
-    </mat-form-field>
-    <mat-form-field appearance="fill">
-      <mat-label>Status</mat-label>
-      <mat-select formControlName="status">
-        @for (option of data.options.status; track option) {
-          <mat-option [value]="option">{{ option }}</mat-option>
-        }
-      </mat-select>
-    </mat-form-field>
-    <mat-form-field appearance="fill">
-      <mat-label>Alive</mat-label>
-      <mat-select formControlName="alive">
-        <mat-option [value]="true">Si</mat-option>
-        <mat-option [value]="false">No</mat-option>
-      </mat-select>
+      <mat-label>Notes</mat-label>
+      <textarea matInput formControlName="notes" rows="3"></textarea>
     </mat-form-field>
   </form>
 </div>
 <div mat-dialog-actions>
-  <button mat-stroked-button color="primary" (click)="cancel()">Cancel</button>
-  <button mat-raised-button [disabled]="!memberForm.valid" color="primary" (click)="save()">Save</button>
+  <button mat-stroked-button (click)="cancel()">Cancel</button>
+  <button mat-raised-button color="primary" [disabled]="!personForm.valid" (click)="save()">Save</button>
 </div>
