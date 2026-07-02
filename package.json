@@ -23,7 +23,7 @@
     "@angular/platform-browser-dynamic": "^19.2.0",
     "@angular/router": "^19.2.0",
     "@apollo/client": "^4.2.3",
-    "apollo-angular": "^14.1.0",
+    "apollo-angular": "^13.0.0",
     "graphql": "^16.14.2",
     "jwt-decode": "^4.0.0",
     "luxon": "^3.7.2",

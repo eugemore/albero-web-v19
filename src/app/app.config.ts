@@ -17,7 +17,6 @@ import { MatLuxonDateModule } from '@angular/material-luxon-adapter';
 import { registerLocaleData } from '@angular/common';
 import localeIt from '@angular/common/locales/it';
 import { InMemoryCache } from '@apollo/client/core';
-import { setContext } from '@apollo/client/link/context';
 import { provideApollo } from 'apollo-angular';
 import { HttpLink } from 'apollo-angular/http';
 
@@ -51,17 +50,8 @@ export const appConfig: ApplicationConfig = {
     provideApollo(() => {
       const httpLink = inject(HttpLink);
 
-      const authLink = setContext(() => {
-        const token = localStorage.getItem('id_token');
-        return token
-          ? { headers: { Authorization: `Bearer ${token}` } }
-          : {};
-      });
-
       return {
-        link: authLink.concat(
-          httpLink.create({ uri: `${environment.api}/graphql` }),
-        ),
+        link: httpLink.create({ uri: `${environment.api}/graphql` }),
         cache: new InMemoryCache(),
       };
     }),
