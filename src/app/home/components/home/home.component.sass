@@ -1,33 +1,21 @@
-@import 'utils/stylesheets-mixins/palettes'
-
 .banner
-  padding: 3rem 0
   display: flex
   flex-flow: column
   align-items: center
-  background-color: map-get($albero-primary-palette, 600)
-  .first-body
-    align-self: start
-    display: flex
-    flex-flow: row wrap
-    align-items: center
-    color: white
-    .banner-logo
-      display: flex
-      flex-flow: row wrap
-      align-items: center
-      gap: 1rem
-      .logo
-        background-color: map-get($albero-primary-palette, 600)
-        border-radius: 5rem
-        height: 10rem
-        width: 10rem
-      .title
-        margin-bottom: 0
-        text-align: center
-        font-size: 4rem
-        font-weight: 700
-        line-height: 4.1rem
+  background-color: #112b21
+  height: 100%
+  color: white
+  gap: 1rem
+  background-image: url('/assets/img/albero-logo.svg'), radial-gradient(circle at center, #24593f 0%, #112b21 70%)
+  background-position: center center, center center
+  background-size: 25rem 25rem, cover
+  background-repeat: no-repeat, no-repeat
+  .title
+    margin-bottom: 0
+    text-align: center
+    font-size: 4rem
+    font-weight: 700
+    line-height: 4.1rem
 
 .presentation-row
   display: flex
