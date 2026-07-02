@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  api: 'https://api.albero.app',
+  api: 'https://albero-api.onrender.com'
 };
