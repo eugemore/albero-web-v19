@@ -1,12 +1,15 @@
+@use '/utils/stylesheets-mixins/palettes' as palettes
+@use "sass:map"
+
 .banner
   display: flex
   flex-flow: column
   align-items: center
-  background-color: #112b21
   height: 100%
   color: white
   gap: 1rem
-  background-image: url('/assets/img/albero-logo.svg'), radial-gradient(circle at center, #24593f 0%, #112b21 70%)
+  background-color: map.get(palettes.$albero-primary-palette, 800)
+  background-image: url('/assets/img/albero-logo.svg'), radial-gradient(circle at center, map.get(palettes.$albero-primary-palette, 900) 50%, map.get(palettes.$albero-primary-palette, 700) 100%)
   background-position: center center, center center
   background-size: 25rem 25rem, cover
   background-repeat: no-repeat, no-repeat

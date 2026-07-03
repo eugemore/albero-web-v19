@@ -1,4 +1,5 @@
-@import 'utils/stylesheets-mixins/palettes'
+@use '/utils/stylesheets-mixins/palettes' as palettes
+@use "sass:map"
 
 .nav-bar
   position: sticky
@@ -9,7 +10,7 @@
   flex-flow: row
   justify-content: space-between
   align-items: center
-  background-color: map-get($albero-primary-palette, 800)
+  background-color: map.get(palettes.$albero-primary-palette, 900)
   color: white
   .logo
     border-radius: 20px
