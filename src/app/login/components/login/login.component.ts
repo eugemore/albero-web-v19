@@ -8,7 +8,7 @@ import { SignupCardComponent } from '../signup-card/signup-card.component';
   standalone: true,
   imports: [MatCardModule, LoginCardComponent, SignupCardComponent],
   templateUrl: './login.component.html',
-  styleUrl: './login.component.sass',
+  styleUrl: './login.component.scss',
 })
 export class LoginComponent {
   protected readonly signup = signal(false);

@@ -9,7 +9,7 @@ import { MemberCardComponent } from '../member-card/member-card.component';
   standalone: true,
   imports: [MemberCardComponent],
   templateUrl: './chart.component.html',
-  styleUrl: './chart.component.sass',
+  styleUrl: './chart.component.scss',
 })
 export class ChartComponent implements OnInit {
   private readonly service = inject(FamilyChartService);

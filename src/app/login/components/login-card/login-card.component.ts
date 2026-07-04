@@ -12,7 +12,7 @@ import { AuthService } from '../../../shared/services/auth.service';
   standalone: true,
   imports: [ReactiveFormsModule, MatCardModule, MatFormFieldModule, MatInputModule, MatButtonModule],
   templateUrl: './login-card.component.html',
-  styleUrl: './login-card.component.sass',
+  styleUrl: './login-card.component.scss',
 })
 export class LoginCardComponent {
   private readonly fb = inject(NonNullableFormBuilder);

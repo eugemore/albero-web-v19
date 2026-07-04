@@ -4,6 +4,10 @@ import { userGuard } from './shared/guards/user.guard';
 export const routes: Routes = [
   {
     path: '',
+    loadComponent: () => import('./landing/landing.component').then(c => c.LandingComponent),
+  },
+  {
+    path: 'home',
     loadChildren: () => import('./home/home.routes').then(r => r.HOME_ROUTES),
   },
   {

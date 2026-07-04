@@ -1,21 +1,44 @@
-<nav class="nav-bar mat-elevation-z6">
-  <img class="logo" src="assets/img/albero-logo.svg" height="40px" width="40px" (click)="goHome()">
-  <div class="button-web-container">
-    @if (isLoggedIn()) {
-      <button mat-button>SETTINGS</button>
-      <button mat-button (click)="goHome()">HOME</button>
-      <button mat-button (click)="logOut()">LOGOUT</button>
+<mat-toolbar class="nav">
+  <div class="albero-wrap nav-inner">
+    <button
+      type="button"
+      class="brand"
+      (click)="goHome()"
+      aria-label="Albero Project — inicio">
+      <span class="mark">
+        <img src="assets/img/albero-logo.svg" alt="" />
+      </span>
+      <span class="brand-name">Albero&nbsp;Project</span>
+    </button>
+
+    @if (!isLoggedIn()) {
+      <nav class="nav-links" aria-label="Principal">
+
+        <a mat-flat-button class="nav-cta" routerLink="/login">Empezar</a>
+      </nav>
     } @else {
-      <button mat-button (click)="logIn()">LOGIN</button>
+      <div class="auth-actions auth-actions--web">
+        <button mat-button (click)="goHome()">
+          <mat-icon>home</mat-icon> Inicio
+        </button>
+        <button mat-button>
+          <mat-icon>settings</mat-icon> Ajustes
+        </button>
+        <button mat-button (click)="logOut()">
+          <mat-icon>logout</mat-icon> Salir
+        </button>
+      </div>
+      <div class="auth-actions auth-actions--mobile">
+        <button mat-icon-button (click)="goHome()" aria-label="Inicio">
+          <mat-icon>home</mat-icon>
+        </button>
+        <button mat-icon-button aria-label="Ajustes">
+          <mat-icon>settings</mat-icon>
+        </button>
+        <button mat-icon-button (click)="logOut()" aria-label="Salir">
+          <mat-icon>logout</mat-icon>
+        </button>
+      </div>
     }
   </div>
-  <div class="button-mobile-container">
-    @if (isLoggedIn()) {
-      <button mat-icon-button><mat-icon>settings</mat-icon></button>
-      <button mat-icon-button (click)="goHome()"><mat-icon>home</mat-icon></button>
-      <button mat-icon-button (click)="logOut()"><mat-icon>logout</mat-icon></button>
-    } @else {
-      <button mat-icon-button (click)="logIn()"><mat-icon>login</mat-icon></button>
-    }
-  </div>
-</nav>
+</mat-toolbar>

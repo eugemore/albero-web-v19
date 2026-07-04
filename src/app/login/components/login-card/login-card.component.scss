@@ -1,0 +1,12 @@
+@use '/utils/stylesheets-mixins/form-cards' as form-cards;
+
+@include form-cards.form-header;
+
+.form {
+  @include form-cards.stretch-and-align;
+}
+
+.actions {
+  @include form-cards.card-actions;
+  @include form-cards.stretch-and-align;
+}

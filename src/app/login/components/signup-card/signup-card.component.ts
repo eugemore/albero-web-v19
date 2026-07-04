@@ -12,7 +12,7 @@ import { confirmPasswordValidator } from '../../../shared/validators/confirm-pas
   standalone: true,
   imports: [ReactiveFormsModule, MatCardModule, MatFormFieldModule, MatInputModule, MatButtonModule],
   templateUrl: './signup-card.component.html',
-  styleUrl: './signup-card.component.sass',
+  styleUrl: './signup-card.component.scss',
 })
 export class SignupCardComponent {
   private readonly fb = inject(NonNullableFormBuilder);

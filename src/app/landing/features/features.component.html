@@ -1,0 +1,26 @@
+<section class="features" id="features">
+  <div class="albero-wrap">
+    <header class="sec-head">
+      <p class="sec-eyebrow">Cómo funciona</p>
+      <h2>Del árbol de familia a la carpeta lista para presentar</h2>
+      <p class="sec-sub">
+        Albero acompaña cada paso del trámite: reconstruir tu linaje, reunir la
+        documentación y tener todo en orden.
+      </p>
+    </header>
+
+    <div class="grid">
+      @for (f of features; track f.title; let i = $index) {
+        <mat-card
+          class="feature-card mat-elevation-z1"
+          appReveal
+          [revealDelay]="(i % 2) * 80">
+          <svg class="floret" viewBox="0 0 400 400" aria-hidden="true"><use href="#albero" /></svg>
+          <div class="icon"><mat-icon>{{ f.icon }}</mat-icon></div>
+          <h3>{{ f.title }}</h3>
+          <p>{{ f.description }}</p>
+        </mat-card>
+      }
+    </div>
+  </div>
+</section>

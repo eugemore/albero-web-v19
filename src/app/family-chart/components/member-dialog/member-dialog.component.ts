@@ -37,7 +37,7 @@ export interface PersonFormValue {
     MatDatepickerModule,
   ],
   templateUrl: './member-dialog.component.html',
-  styleUrl: './member-dialog.component.sass',
+  styleUrl: './member-dialog.component.scss',
 })
 export class MemberDialogComponent {
   private readonly fb = inject(NonNullableFormBuilder);

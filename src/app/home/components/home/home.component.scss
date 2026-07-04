@@ -1,0 +1,54 @@
+@use '/utils/stylesheets-mixins/palettes' as palettes;
+@use 'sass:map';
+
+.banner {
+  display: flex;
+  flex-flow: column;
+  align-items: center;
+  height: 100%;
+  color: white;
+  gap: 1rem;
+  background-color: map.get(palettes.$albero-primary-palette, 800);
+  background-image: url('/assets/img/albero-logo.svg'), radial-gradient(circle at center, map.get(palettes.$albero-primary-palette, 900) 50%, map.get(palettes.$albero-primary-palette, 700) 100%);
+  background-position: center center, center center;
+  background-size: 25rem 25rem, cover;
+  background-repeat: no-repeat, no-repeat;
+
+  .title {
+    margin-bottom: 0;
+    text-align: center;
+    font-size: 4rem;
+    font-weight: 700;
+    line-height: 4.1rem;
+  }
+}
+
+.presentation-row {
+  display: flex;
+  flex-flow: column;
+  padding: 2rem 0.5rem 0;
+  gap: 2rem;
+
+  .presentation-body {
+    border-radius: 1rem;
+    padding: 1rem;
+    background-color: white;
+
+    h2 {
+      margin-top: 1rem;
+      margin-bottom: 0.5rem;
+    }
+
+    p {
+      text-align: justify;
+    }
+  }
+}
+
+@media (min-width: 600px) {
+  .presentation-row {
+    padding: 2rem 2rem 0;
+    display: flex;
+    flex-flow: row;
+  }
+}

@@ -1,6 +1,7 @@
 import { Component, inject } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { AuthService } from '../../../shared/services/auth.service';
@@ -8,9 +9,9 @@ import { AuthService } from '../../../shared/services/auth.service';
 @Component({
   selector: 'app-nav-bar',
   standalone: true,
-  imports: [MatButtonModule, MatIconModule],
+  imports: [RouterLink, MatToolbarModule, MatButtonModule, MatIconModule],
   templateUrl: './nav-bar.component.html',
-  styleUrl: './nav-bar.component.sass',
+  styleUrl: './nav-bar.component.scss',
 })
 export class NavBarComponent {
   private readonly authService = inject(AuthService);
@@ -20,12 +21,8 @@ export class NavBarComponent {
     initialValue: false,
   });
 
-  protected logIn(): void {
-    this.router.navigateByUrl('/login');
-  }
-
   protected goHome(): void {
-    this.router.navigateByUrl(this.isLoggedIn() ? '/chart' : '');
+    this.router.navigateByUrl(this.isLoggedIn() ? '/chart' : '/');
   }
 
   protected logOut(): void {

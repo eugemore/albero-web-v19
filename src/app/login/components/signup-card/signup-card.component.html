@@ -8,20 +8,20 @@
     <p>Check your inbox and verify your email before logging in.</p>
   </mat-card-content>
   <mat-card-actions class="actions">
-    <button mat-raised-button color="primary" (click)="signupOutput.emit()">Go to Login</button>
+    <button mat-flat-button color="primary" (click)="signupOutput.emit()">Go to Login</button>
   </mat-card-actions>
 } @else {
   <mat-card-content>
     <form [formGroup]="form" class="form">
-      <mat-form-field appearance="fill">
+      <mat-form-field appearance="outline">
         <mat-label>Email</mat-label>
         <input matInput formControlName="email">
       </mat-form-field>
-      <mat-form-field appearance="fill">
+      <mat-form-field appearance="outline">
         <mat-label>Password</mat-label>
         <input matInput type="password" formControlName="password">
       </mat-form-field>
-      <mat-form-field appearance="fill">
+      <mat-form-field appearance="outline">
         <mat-label>Confirm Password</mat-label>
         <input matInput type="password" formControlName="confirmPassword">
       </mat-form-field>
@@ -31,7 +31,7 @@
     }
   </mat-card-content>
   <mat-card-actions class="actions">
-    <button mat-raised-button color="primary" [disabled]="!form.valid" (click)="signup()">Sign up</button>
+    <button mat-flat-button color="primary" [disabled]="!form.valid" (click)="signup()">Sign up</button>
     <button mat-stroked-button color="primary" (click)="signupOutput.emit()">I have an account</button>
   </mat-card-actions>
 }

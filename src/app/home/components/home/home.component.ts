@@ -6,6 +6,6 @@ import { MatButtonModule } from '@angular/material/button';
   standalone: true,
   imports: [MatButtonModule],
   templateUrl: './home.component.html',
-  styleUrl: './home.component.sass',
+  styleUrl: './home.component.scss',
 })
 export class HomeComponent {}

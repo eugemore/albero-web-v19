@@ -9,7 +9,7 @@ import { Person } from '../../services/family-chart.service';
   standalone: true,
   imports: [MatCardModule, MatButtonModule, MatIconModule],
   templateUrl: './member-card.component.html',
-  styleUrl: './member-card.component.sass',
+  styleUrl: './member-card.component.scss',
 })
 export class MemberCardComponent {
   readonly member = input.required<Person>();
